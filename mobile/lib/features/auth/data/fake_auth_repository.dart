@@ -5,7 +5,7 @@ import 'package:controle_ds/features/auth/domain/user.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  // TODO: replace FakeAuthRepository with AuthRepositoryImpl when backend S04 exists.
+  // TODO: switch to authRepositoryImplProvider when backend S04 exists.
   return FakeAuthRepository(tokenStorage: ref.watch(tokenStorageProvider));
 });
 

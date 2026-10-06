@@ -339,6 +339,23 @@ Convenções: PK `id` UUID; `created_at`/`updated_at` em todas as tabelas; valor
 
 ### 10.3 Exemplos
 
+**Cadastro — request**
+```json
+{
+  "name": "Nome do Usuário",
+  "email": "usuario@example.com",
+  "password": "senha-com-10-caracteres",
+  "accepted_terms": true,
+  "terms_version": "2026-10"
+}
+```
+Resposta `201`: igual à resposta de login abaixo.
+
+**Login — request**
+```json
+{ "email": "usuario@example.com", "password": "senha-com-10-caracteres" }
+```
+
 **Login — resposta 200**
 ```json
 {
@@ -349,6 +366,30 @@ Convenções: PK `id` UUID; `created_at`/`updated_at` em todas as tabelas; valor
   "user": { "id": "a1b2c3d4-...", "name": "Nome do Usuário" }
 }
 ```
+
+**Refresh — request**
+```json
+{ "refresh_token": "d3f..." }
+```
+Resposta `200`: igual à resposta de login acima.
+
+**Logout — request**
+```json
+{ "refresh_token": "d3f..." }
+```
+Resposta `204` sem corpo.
+
+**Esqueci a senha — request**
+```json
+{ "email": "usuario@example.com" }
+```
+Resposta `202`: sempre igual, exista ou não o e-mail.
+
+**Redefinir senha — request**
+```json
+{ "token": "token-de-uso-unico", "new_password": "nova-senha-com-10" }
+```
+Resposta `204` sem corpo.
 
 **Criar transação — request**
 ```json

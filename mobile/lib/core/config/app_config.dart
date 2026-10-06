@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final class AppConfig {
+  static const termsVersion = '2026-10';
+
   const AppConfig({required this.env, required this.baseUrl});
 
   final String env;

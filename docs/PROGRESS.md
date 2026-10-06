@@ -16,9 +16,10 @@
 - Pendências: integrar com a API real e ligar as rotas à sessão de autenticação implementada em M3.
 
 ## M3 — Autenticação (2026-10-06)
-- Status: parcial — sessão, telas e repositório fake implementados; integração real bloqueada por campos de requisição ausentes no contrato
+- Status: concluída
 - Requisitos atendidos: MOB-01 e MOB-02 (fluxos locais, validação, restauração e redirecionamento)
-- Decisões: `FakeAuthRepository` em memória é o provider ativo; `SessionNotifier` coordena restauração, login, cadastro e logout; logout limpa tokens mesmo quando a chamada remota falha; mensagens de erro usam `messageForCode`; esqueci a senha exibe sempre a mesma mensagem
-- Validação: `flutter test` passou (31 testes); `dart analyze` sem problemas
-- Pendências: a seção 10 lista endpoints mas não especifica os corpos de cadastro, refresh, logout, recuperação e redefinição de senha; aguardar definição desses campos antes de implementar `AuthApi` e `AuthRepositoryImpl`, sem inventar contrato. **Trocar FakeAuthRepository pelo real quando a S04 do backend existir.**
+- Decisões: os exemplos de payload e respostas de AUTH foram adicionados à seção 10.3 do contrato; `AuthApi` e `AuthRepositoryImpl` implementam esses exemplos, o repository real tem provider alternativo e `FakeAuthRepository` continua como provider ativo até a S04 do backend. `SessionNotifier` coordena restauração, login, cadastro e logout; logout limpa tokens mesmo quando a chamada remota falha; mensagens usam `messageForCode`; esqueci a senha exibe sempre a mesma mensagem.
+- Mudança de contrato: seção 10.3 agora especifica os corpos de register, login, refresh, logout, forgot-password e reset-password, incluindo `accepted_terms`, `terms_version` e status/respostas esperados.
+- Validação: `flutter test` passou (36 testes); `dart analyze` sem problemas.
+- Pendências: **trocar FakeAuthRepository pelo real quando a S04 do backend existir** e validar a integração contra o backend quando estiver disponível.
 - Instruções: `.github/copilot-instructions.md` foi criado com o bloco da Seção 1, pois o arquivo não existia.
