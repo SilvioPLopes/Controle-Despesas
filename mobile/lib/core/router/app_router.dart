@@ -1,12 +1,17 @@
-import 'package:controle_ds/core/session/session_events.dart';
-import 'package:controle_ds/core/storage/token_storage.dart';
+import 'package:controle_ds/features/auth/presentation/forgot_password_page.dart';
+import 'package:controle_ds/features/auth/presentation/login_page.dart';
+import 'package:controle_ds/features/auth/presentation/register_page.dart';
+import 'package:controle_ds/features/auth/presentation/reset_password_page.dart';
+import 'package:controle_ds/features/auth/presentation/session_notifier.dart';
+import 'package:controle_ds/features/auth/presentation/splash_page.dart';
+import 'package:controle_ds/features/auth/presentation/auth_error_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final refreshListenable = _RouterRefreshListenable();
-  ref.listen<bool>(sessionExpiredProvider, (previous, next) {
+  ref.listen(sessionNotifierProvider, (previous, next) {
     if (previous != next) {
       refreshListenable.refresh();
     }
@@ -15,43 +20,50 @@ final routerProvider = Provider<GoRouter>((ref) {
   final router = GoRouter(
     initialLocation: '/splash',
     refreshListenable: refreshListenable,
-    redirect: (context, state) async {
-      if (state.matchedLocation != '/home') {
-        return null;
+    redirect: (context, state) {
+      final location = state.matchedLocation;
+      final session = ref.read(sessionNotifierProvider);
+      final sessionState = session.asData?.value;
+      final isAuthenticated =
+          sessionState?.status == SessionStatus.authenticated;
+      if (isAuthenticated &&
+          const {
+            '/splash',
+            '/login',
+            '/register',
+            '/forgot-password',
+            '/reset-password',
+          }.contains(location)) {
+        return '/home';
       }
-      if (ref.read(sessionExpiredProvider)) {
+      if (!isAuthenticated && location == '/home') {
         return '/login';
       }
-      final tokens = await ref.read(tokenStorageProvider).read();
-      return tokens == null ? '/login' : null;
+      if (!isAuthenticated && location == '/splash' && !session.isLoading) {
+        return '/login';
+      }
+      if (location != '/home') {
+        return null;
+      }
+      return isAuthenticated ? null : '/login';
     },
     routes: [
-      GoRoute(
-        path: '/splash',
-        builder: (context, state) => const _PlaceholderPage(label: 'Splash'),
-      ),
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const _PlaceholderPage(label: 'Login'),
-      ),
+      GoRoute(path: '/splash', builder: (context, state) => const SplashPage()),
+      GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
       GoRoute(
         path: '/register',
-        builder: (context, state) => const _PlaceholderPage(label: 'Cadastro'),
+        builder: (context, state) => const RegisterPage(),
       ),
       GoRoute(
         path: '/forgot-password',
-        builder: (context, state) =>
-            const _PlaceholderPage(label: 'Recuperar senha'),
+        builder: (context, state) => const ForgotPasswordPage(),
       ),
       GoRoute(
         path: '/reset-password',
         builder: (context, state) =>
-            const _PlaceholderPage(label: 'Redefinir senha'),
+            ResetPasswordPage(token: state.uri.queryParameters['token'] ?? ''),
       ),
-      GoRoute(
-        path: '/home',
-        builder: (context, state) => const _PlaceholderPage(label: 'Início'),
-      ),
+      GoRoute(path: '/home', builder: (context, state) => const _HomePage()),
     ],
   );
   ref.onDispose(() {
@@ -65,12 +77,29 @@ class _RouterRefreshListenable extends ChangeNotifier {
   void refresh() => notifyListeners();
 }
 
-class _PlaceholderPage extends StatelessWidget {
-  const _PlaceholderPage({required this.label});
+class _HomePage extends ConsumerWidget {
+  const _HomePage();
 
-  final String label;
+  Future<void> _logout(BuildContext context, WidgetRef ref) async {
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      await ref.read(sessionNotifierProvider.notifier).logout();
+    } on Object catch (error) {
+      messenger.showSnackBar(SnackBar(content: Text(authErrorMessage(error))));
+    }
+  }
 
   @override
-  Widget build(BuildContext context) =>
-      Scaffold(body: Center(child: Text(label)));
+  Widget build(BuildContext context, WidgetRef ref) => Scaffold(
+    appBar: AppBar(title: const Text('Início')),
+    body: Center(
+      child: FilledButton(
+        key: const Key('logout-button'),
+        onPressed: ref.watch(sessionNotifierProvider).isLoading
+            ? null
+            : () => _logout(context, ref),
+        child: const Text('Sair'),
+      ),
+    ),
+  );
 }
