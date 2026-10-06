@@ -475,6 +475,57 @@ Resposta com o objeto da transação no formato listado acima. `PATCH` usa `/api
 ```
 Resposta: `{ "status": "CONNECTED", "key_hint": "…a9F2", "last_checked_at": "2026-10-05T14:00:00Z" }`
 
+**Credencial da corretora — respostas**
+`GET /api/v1/exchange/credentials` retorna os mesmos metadados da resposta de `PUT`.
+Se não houver credencial salva, responde `404` com o código `NOT_FOUND`. `status`
+aceita `CONNECTED`, `INVALID`, `RATE_LIMITED` ou `UNREACHABLE`; `key_hint` é
+string; `last_checked_at` é timestamp UTC ISO 8601 ou `null`. A resposta nunca
+inclui `api_key` nem `api_secret`. `DELETE /api/v1/exchange/credentials` responde
+`204` sem corpo.
+
+**Carteira — resposta**
+`GET /api/v1/portfolio` e `POST /api/v1/portfolio/sync` (sem corpo) retornam:
+```json
+{
+  "total_value_usdt": "3775.00",
+  "total_value_display": "3775.00",
+  "display_currency": "USDT",
+  "total_pnl": "75.00",
+  "total_pnl_percent": "2.02",
+  "stale": false,
+  "last_synced_at": "2026-10-06T13:00:00Z",
+  "assets": [
+    {
+      "symbol": "BTC",
+      "quantity": "0.025",
+      "average_price": "60000.00",
+      "current_price": "65000.00",
+      "current_value": "1625.00",
+      "pnl": "125.00",
+      "pnl_percent": "8.33"
+    }
+  ]
+}
+```
+Todos os campos monetários, inclusive quantidade, são strings decimais.
+`total_pnl_percent` e `pnl_percent` são strings decimais ou `null`;
+`last_synced_at` é timestamp UTC ISO 8601 ou `null`. `stale` é booleano.
+Sincronização manual acima de uma vez por minuto responde `429 RATE_LIMITED`.
+
+**Juros compostos — request**
+`POST /api/v1/calculations/compound-interest`:
+```json
+{
+  "initial_amount": "1000.00",
+  "monthly_contribution": "100.00",
+  "monthly_rate": "1.00",
+  "months": 12
+}
+```
+`monthly_rate` é o percentual ao mês (`"1.00"` representa 1%); taxa zero é
+válida. `months` é inteiro maior ou igual a 1. A resposta contém
+`final_value`, `total_invested` e `total_interest`, todos strings decimais.
+
 **Configuração do robô — request**
 ```json
 {

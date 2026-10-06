@@ -31,3 +31,10 @@
 - Mudança de contrato: seção 10.3 agora descreve filtros/paginação de transações, respostas de transação, criação/edição/exclusão e CRUD/arquivamento de categorias, conforme campos autorizados para M4.
 - Validação: `flutter test` passou (46 testes); `dart analyze` sem problemas.
 - Pendências: **trocar o provider fake pelo `FinanceRepositoryImpl` quando as sessões S05/S06 do backend existirem** e validar a integração contra a API real.
+
+## M5 — Corretora, carteira e calculadora (2026-10-06)
+- Status: concluída
+- Requisitos atendidos: EXCH-01 a EXCH-05, PORT-01 a PORT-04, CALC-04; MOB-06, MOB-07, MOB-10 e MOB-12
+- Decisões: respostas e campos autorizados foram registrados na seção 10.3; valores monetários e quantidades são `Decimal`; a key e o secret permanecem apenas nos controllers locais, nunca são armazenados em Riverpod/modelos/logs/mensagens, e os campos são limpos no `finally`; confirmação local precede salvar/remover; as APIs reais usam Dio, mas os providers ativos usam fakes; o fake de juros compostos é demonstrativo e arredonda cada mês para 2 casas; web/Linux/Fuchsia usa diálogo explícito de confirmação quando não há autenticação do dispositivo.
+- Validação: `flutter test` passou (60 testes); `dart analyze` sem problemas.
+- Pendências: trocar os providers fake por `ExchangeRepositoryImpl` e `PortfolioRepositoryImpl` quando S10/S11 do backend existirem (e o repositório real da calculadora quando o endpoint S11 existir); validar integração com backend; os ajustes nativos de `local_auth` (Android/iOS) não puderam ser validados em aparelho.

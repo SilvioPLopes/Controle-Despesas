@@ -1,6 +1,8 @@
 import 'package:controle_ds/features/finance/presentation/categories_page.dart';
 import 'package:controle_ds/features/finance/presentation/dashboard_page.dart';
 import 'package:controle_ds/features/finance/presentation/transactions_page.dart';
+import 'package:controle_ds/features/portfolio/presentation/portfolio_page.dart';
+import 'package:controle_ds/features/more/presentation/more_page.dart';
 import 'package:controle_ds/features/auth/presentation/auth_error_message.dart';
 import 'package:controle_ds/features/auth/presentation/session_notifier.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +18,13 @@ class HomeShell extends ConsumerStatefulWidget {
 class _HomeShellState extends ConsumerState<HomeShell> {
   int _selectedIndex = 0;
 
-  static const _pages = [DashboardPage(), TransactionsPage(), CategoriesPage()];
+  static const _pages = [
+    DashboardPage(),
+    TransactionsPage(),
+    CategoriesPage(),
+    PortfolioPage(),
+    MorePage(),
+  ];
 
   Future<void> _logout() async {
     final messenger = ScaffoldMessenger.of(context);
@@ -68,6 +76,16 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           icon: Icon(Icons.category_outlined),
           selectedIcon: Icon(Icons.category),
           label: 'Categorias',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.account_balance_wallet_outlined),
+          selectedIcon: Icon(Icons.account_balance_wallet),
+          label: 'Carteira',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.more_horiz),
+          selectedIcon: Icon(Icons.more),
+          label: 'Mais',
         ),
       ],
     ),

@@ -5,6 +5,7 @@ import 'package:controle_ds/features/auth/presentation/reset_password_page.dart'
 import 'package:controle_ds/features/auth/presentation/session_notifier.dart';
 import 'package:controle_ds/features/auth/presentation/splash_page.dart';
 import 'package:controle_ds/features/finance/presentation/home_shell.dart';
+import 'package:controle_ds/core/security/local_auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -18,6 +19,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   });
 
   final router = GoRouter(
+    navigatorKey: localAuthNavigatorKey,
     initialLocation: '/splash',
     refreshListenable: refreshListenable,
     redirect: (context, state) {
