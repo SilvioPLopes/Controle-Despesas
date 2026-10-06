@@ -149,7 +149,7 @@ void main() {
     );
   });
 
-  testWidgets('protected home redirects to login without a session', (
+  testWidgets('registered routes apply session redirects without a session', (
     tester,
   ) async {
     final container = _container();
@@ -157,11 +157,25 @@ void main() {
       UncontrolledProviderScope(container: container, child: const App()),
     );
     await tester.pumpAndSettle();
-    container.read(routerProvider).go('/home');
-    await tester.pumpAndSettle();
 
-    expect(find.byKey(const Key('login-submit')), findsOneWidget);
-    expect(find.text('Início'), findsNothing);
+    final router = container.read(routerProvider);
+    const routes = {
+      '/splash': '/login',
+      '/login': '/login',
+      '/register': '/register',
+      '/forgot-password': '/forgot-password',
+      '/reset-password': '/reset-password',
+      '/home': '/login',
+    };
+    for (final entry in routes.entries) {
+      router.go(entry.key);
+      await tester.pumpAndSettle();
+      expect(
+        router.routeInformationProvider.value.uri.path,
+        entry.value,
+        reason: '${entry.key} must resolve correctly without a session',
+      );
+    }
     container.dispose();
   });
 }

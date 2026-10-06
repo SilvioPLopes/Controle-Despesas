@@ -540,6 +540,67 @@ válida. `months` é inteiro maior ou igual a 1. A resposta contém
 }
 ```
 
+**Configuração do robô — resposta**
+`GET /api/v1/bot/settings` retorna os campos do exemplo de configuração acima,
+mais `risk_level` (`LOW`, `MEDIUM` ou `HIGH`) e
+`consent: { "accepted": boolean, "version": string | null }`.
+Sem configuração salva, responde `404 NOT_FOUND`. `PUT /api/v1/bot/settings`
+recebe o exemplo acima acrescido de `risk_level` e responde com o mesmo formato
+do GET. Valores monetários são strings decimais; `mode` viaja em maiúsculas.
+
+**Status do robô — resposta**
+`GET /api/v1/bot/status`, `POST /api/v1/bot/start`, `POST /api/v1/bot/stop` e
+`POST /api/v1/bot/kill` (os POSTs sem corpo) retornam:
+```json
+{
+  "state": "INACTIVE",
+  "mode": "PAPER",
+  "max_capital_allocation": "1000.00",
+  "last_run_at": null,
+  "next_run_at": null,
+  "open_orders": 0,
+  "pnl_today": "0.00",
+  "last_error": null,
+  "paper_days_completed": 0,
+  "live_allowed": false
+}
+```
+`state`: `INACTIVE`, `STARTING`, `RUNNING`, `PAUSED`, `STOPPED_BY_RISK` ou
+`ERROR`; `mode`: `PAPER` ou `LIVE`; timestamps são UTC ISO 8601 ou `null`.
+`last_error`, quando presente, contém `code`, `message` e `occurred_at`.
+`POST /api/v1/bot/consent` recebe `{ "version": "2026-10" }` e responde `204`.
+Erros de início podem ser `409 BOT_INVALID_STATE`, `403 CONSENT_REQUIRED` ou
+`403 PAPER_PERIOD_NOT_MET`.
+
+**Histórico de ordens — request e resposta**
+`GET /api/v1/bot/orders` aceita filtros opcionais `simulated` (boolean),
+`pair`, `from`, `to`, `cursor` e `limit`. Datas usam `YYYY-MM-DD`.
+Resposta paginada:
+```json
+{
+  "items": [
+    {
+      "id": "order-1",
+      "pair": "BTC/USDT",
+      "side": "BUY",
+      "quantity": "0.010",
+      "avg_price": "65000.00",
+      "fee": "0.10",
+      "status": "FILLED",
+      "is_simulated": true,
+      "exchange_order_id": null,
+      "strategy_id": "dca_v1",
+      "signal_reason": "Compra periódica DCA",
+      "created_at": "2026-10-06T13:00:00Z"
+    }
+  ],
+  "next_cursor": null
+}
+```
+`side`: `BUY` ou `SELL`; `status`: `OPEN`, `FILLED`, `CANCELED` ou
+`REJECTED`; todos os valores monetários e quantidades são strings decimais;
+`exchange_order_id` é string ou `null`.
+
 ---
 
 ## 11. Segurança e Conformidade (resumo de controles)

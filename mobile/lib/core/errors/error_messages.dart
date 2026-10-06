@@ -11,7 +11,8 @@ const _messagesByCode = <String, String>{
       'O período mínimo de operação em modo PAPER ainda não foi concluído.',
   'NOT_FOUND': 'O item solicitado não foi encontrado.',
   'EMAIL_ALREADY_REGISTERED': 'Este e-mail já está cadastrado.',
-  'BOT_INVALID_STATE': 'Esta ação não está disponível no estado atual do robô.',
+  'BOT_INVALID_STATE':
+      'Esta ação não está disponível no estado atual do robô.',
   'VALIDATION_ERROR': 'Confira os dados informados.',
   'EXCHANGE_KEY_INVALID': 'A chave da corretora é inválida.',
   'EXCHANGE_KEY_WITHDRAW_ENABLED':

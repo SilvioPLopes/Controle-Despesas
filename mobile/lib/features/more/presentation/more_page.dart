@@ -1,4 +1,5 @@
 import 'package:controle_ds/features/calculator/presentation/compound_interest_page.dart';
+import 'package:controle_ds/features/bot/presentation/bot_orders_page.dart';
 import 'package:controle_ds/features/exchange/presentation/exchange_page.dart';
 import 'package:flutter/material.dart';
 
@@ -15,9 +16,9 @@ class MorePage extends StatelessWidget {
           leading: const Icon(Icons.currency_exchange),
           title: const Text('Corretora'),
           trailing: const Icon(Icons.chevron_right),
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute<void>(builder: (_) => const ExchangePage()),
-          ),
+          onTap: () => Navigator.of(
+            context,
+          ).push(MaterialPageRoute<void>(builder: (_) => const ExchangePage())),
         ),
         ListTile(
           key: const Key('more-calculator'),
@@ -28,6 +29,15 @@ class MorePage extends StatelessWidget {
             MaterialPageRoute<void>(
               builder: (_) => const CompoundInterestPage(),
             ),
+          ),
+        ),
+        ListTile(
+          key: const Key('more-bot-orders'),
+          leading: const Icon(Icons.history),
+          title: const Text('Histórico de ordens'),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(builder: (_) => const BotOrdersPage()),
           ),
         ),
       ],

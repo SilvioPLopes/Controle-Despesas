@@ -2,6 +2,7 @@ import 'package:controle_ds/core/money/money.dart';
 import 'package:controle_ds/features/finance/presentation/dashboard_notifier.dart';
 import 'package:controle_ds/features/finance/domain/dashboard_summary.dart';
 import 'package:controle_ds/features/finance/domain/transaction.dart';
+import 'package:decimal/decimal.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -178,6 +179,10 @@ class _CategoryChart extends StatelessWidget {
         child: Center(child: Text('Sem dados de categorias neste mês.')),
       );
     }
+    final total = summary.byCategory.fold(
+      Decimal.zero,
+      (sum, category) => sum + category.total,
+    );
     final palette = [
       Theme.of(context).colorScheme.primary,
       Theme.of(context).colorScheme.tertiary,
@@ -196,9 +201,9 @@ class _CategoryChart extends StatelessWidget {
               sections: [
                 for (var index = 0; index < summary.byCategory.length; index++)
                   PieChartSectionData(
-                    value: double.parse(
-                      summary.byCategory[index].total.toString(),
-                    ),
+                    value: total == Decimal.zero
+                        ? 1
+                        : (summary.byCategory[index].total / total).toDouble(),
                     color: palette[index % palette.length],
                     title: '',
                     radius: 62,
