@@ -23,3 +23,11 @@
 - Validação: `flutter test` passou (36 testes); `dart analyze` sem problemas.
 - Pendências: **trocar FakeAuthRepository pelo real quando a S04 do backend existir** e validar a integração contra o backend quando estiver disponível.
 - Instruções: `.github/copilot-instructions.md` foi criado com o bloco da Seção 1, pois o arquivo não existia.
+
+## M4 — Finanças (2026-10-06)
+- Status: concluída
+- Requisitos atendidos: FIN-01 a FIN-07; MOB-03, MOB-04 e MOB-05
+- Decisões: `Decimal` permanece no domínio e no tráfego JSON; o valor é convertido para o tipo numérico exigido pelo fl_chart somente para desenhar as fatias do gráfico. `FakeFinanceRepository` é o provider ativo e `FinanceRepositoryImpl` está disponível via provider alternativo. Providers de dashboard, transações e categorias usam `AsyncNotifier`. HomeShell substitui o placeholder e as datas/material UI usam localização pt-BR.
+- Mudança de contrato: seção 10.3 agora descreve filtros/paginação de transações, respostas de transação, criação/edição/exclusão e CRUD/arquivamento de categorias, conforme campos autorizados para M4.
+- Validação: `flutter test` passou (46 testes); `dart analyze` sem problemas.
+- Pendências: **trocar o provider fake pelo `FinanceRepositoryImpl` quando as sessões S05/S06 do backend existirem** e validar a integração contra a API real.

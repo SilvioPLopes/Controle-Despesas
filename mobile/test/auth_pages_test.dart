@@ -11,8 +11,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
+  setUpAll(() => initializeDateFormatting('pt_BR'));
+
   testWidgets('login validates fields locally', (tester) async {
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
@@ -57,7 +60,7 @@ void main() {
 
     loginCompleter.complete(const User(id: 'user-1', name: 'Ana'));
     await tester.pumpAndSettle();
-    expect(find.text('Início'), findsOneWidget);
+    expect(find.text('Resumo financeiro'), findsOneWidget);
   });
 
   testWidgets('login displays the server error mapped by code', (tester) async {

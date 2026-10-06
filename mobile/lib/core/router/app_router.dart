@@ -4,7 +4,7 @@ import 'package:controle_ds/features/auth/presentation/register_page.dart';
 import 'package:controle_ds/features/auth/presentation/reset_password_page.dart';
 import 'package:controle_ds/features/auth/presentation/session_notifier.dart';
 import 'package:controle_ds/features/auth/presentation/splash_page.dart';
-import 'package:controle_ds/features/auth/presentation/auth_error_message.dart';
+import 'package:controle_ds/features/finance/presentation/home_shell.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -63,7 +63,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) =>
             ResetPasswordPage(token: state.uri.queryParameters['token'] ?? ''),
       ),
-      GoRoute(path: '/home', builder: (context, state) => const _HomePage()),
+      GoRoute(path: '/home', builder: (context, state) => const HomeShell()),
     ],
   );
   ref.onDispose(() {
@@ -75,31 +75,4 @@ final routerProvider = Provider<GoRouter>((ref) {
 
 class _RouterRefreshListenable extends ChangeNotifier {
   void refresh() => notifyListeners();
-}
-
-class _HomePage extends ConsumerWidget {
-  const _HomePage();
-
-  Future<void> _logout(BuildContext context, WidgetRef ref) async {
-    final messenger = ScaffoldMessenger.of(context);
-    try {
-      await ref.read(sessionNotifierProvider.notifier).logout();
-    } on Object catch (error) {
-      messenger.showSnackBar(SnackBar(content: Text(authErrorMessage(error))));
-    }
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) => Scaffold(
-    appBar: AppBar(title: const Text('Início')),
-    body: Center(
-      child: FilledButton(
-        key: const Key('logout-button'),
-        onPressed: ref.watch(sessionNotifierProvider).isLoading
-            ? null
-            : () => _logout(context, ref),
-        child: const Text('Sair'),
-      ),
-    ),
-  );
 }

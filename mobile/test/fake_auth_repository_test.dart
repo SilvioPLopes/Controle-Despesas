@@ -31,6 +31,16 @@ void main() {
     expect(restored.id, user.id);
   });
 
+  test('logs in with the pre-registered test user', () async {
+    final user = await repository.login(
+      'teste@controleds.com',
+      'senha1234567',
+    );
+
+    expect(user.name, 'Teste');
+    expect(storage.tokens?.accessToken, isNotEmpty);
+  });
+
   test('returns INVALID_CREDENTIALS for invalid login', () async {
     final error = await _capture(
       () => repository.login('missing@example.com', 'uma-senha-valida'),

@@ -402,6 +402,58 @@ Resposta `204` sem corpo.
 }
 ```
 
+**Listar transações — request**
+```http
+GET /api/v1/transactions?from=2026-10-01&to=2026-10-31&type=EXPENSE&category_id=9b1c...&cursor=cursor-1&limit=50
+```
+Todos os filtros são opcionais. `type` aceita `INCOME` ou `EXPENSE`; `limit` é no máximo 100.
+
+**Listar transações — resposta**
+```json
+{
+  "items": [
+    {
+      "id": "f8e9...",
+      "type": "EXPENSE",
+      "amount": "150.75",
+      "description": "Conta de Luz",
+      "category_id": "9b1c...",
+      "date": "2026-10-05"
+    }
+  ],
+  "next_cursor": null
+}
+```
+
+**Criar/editar transação — resposta**
+Resposta com o objeto da transação no formato listado acima. `PATCH` usa `/api/v1/transactions/{id}` e o mesmo corpo do exemplo de criação.
+
+**Excluir transação**
+`DELETE /api/v1/transactions/{id}` responde `204` sem corpo.
+
+**Listar categorias — resposta**
+```json
+{
+  "items": [
+    { "id": "9b1c...", "name": "Moradia", "archived": false }
+  ]
+}
+```
+
+**Criar categoria — request**
+```json
+{ "name": "Moradia" }
+```
+
+**Editar categoria — request**
+`PATCH /api/v1/categories/{id}`; campos opcionais:
+```json
+{ "name": "Casa", "archived": false }
+```
+
+**Arquivar categoria**
+`DELETE /api/v1/categories/{id}` responde `204` sem corpo. Categorias com transações são arquivadas, não removidas.
+
 **Dashboard — resposta**
 ```json
 {

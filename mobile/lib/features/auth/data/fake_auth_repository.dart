@@ -11,7 +11,12 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 
 class FakeAuthRepository implements AuthRepository {
   FakeAuthRepository({required this.tokenStorage, DateTime Function()? now})
-    : _now = now ?? DateTime.now;
+    : _now = now ?? DateTime.now {
+    _accounts['teste@controleds.com'] = const _FakeAccount(
+      user: User(id: 'fake-user-test', name: 'Teste'),
+      password: 'senha1234567',
+    );
+  }
 
   static const _attemptWindow = Duration(minutes: 15);
   static const _maxFailedAttempts = 5;
